@@ -5,7 +5,7 @@
 sudo apt-get install apt-transport-https
 ```
 
-## download and add the key to the package manager
+## Download and add the key to the package manager
 ```
 curl https://downloads.plex.tv/plex-keys/PlexSign.key | sudo apt-key add -
 ```
