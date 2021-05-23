@@ -129,29 +129,41 @@ http://192.168.1.151:9091/transmission
 ### Torubleshooting
 ###### Stop transmission daemon
 ```
-
+sudo service transmission-daemon stop
 ```
+
 ###### Add pi to debian-transmission group
-
-
+```
+sudo usermod -a -G debian-transmission pi 
 ```
 
-```
 ###### changing the daemon-user
-
+```
+sudo nano /etc/init.d/transmission-daemon
+# Change USER to pi
 ```
 
+###### Change the rights of the configuration files folder
 ```
-######
-```
-
-```
-######
+sudo chown -R pi /var/lib/transmission-daemon/info/
+sudo chmod 755 /var/lib/transmission-daemon/info/settings.json 
 ```
 
+###### Set the correct permissions for the download / incomplete folders
 ```
-######
+sudo chown -R pi /somewhere/downloads
+sudo chown -R pi /somewhere/incomplete
 ```
+
+###### change the file creation mask
+```
+sudo nano /etc/transmission-daemon/settings.json
+# and change "umask": 18 to "umask": 2
+```
+
+###### Start transmission daemon
+```
+sudo service transmission-daemon start
 
 ```
 
