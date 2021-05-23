@@ -106,14 +106,50 @@ sudo apt install transmission-daemon
 ```
 sudo systemctl stop transmission-daemon
 ```
-
-### order to run the application correctly we should, at this point, edit the configuration file. Transmission-daemon settings are stored in a json file: /etc/transmission-daemon/settings.json
-- download_dir. This is quite self explanatory: via this option we can setup the directory in which the files will be downloaded. The default destination is /var/lib/transmission-daemon/downloads
-- whitelist and rpc-whitelist-enabled. When the latter is enabled, on Line 56 is possible to restrict the hosts from which the connection to the web interface will be allowed, by passing a list of comma-separated allowed IPs. Say for example we want to allow access from the host with the 192.168.1.40 Ip, all we would need to do is add the address to the whitelist (or can just change it to false)
-
-### Firewall configuration
+### give the “pi” user access to the folder created 
 ```
-sudo ufw allow 9091,51413/tcp
+sudo chown -R pi:pi /home/pi/share/torrent_completed
+```
+
+### Make changes to its config file.
+```
+sudo vim /etc/transmission-daemon/settings.json
+
+# "download-dir": "/home/pi/share/torrent_completed",
+# "rpc-whitelist": "192.168.*.*",
+```
+
+### edit the Transmission daemon startup script so that it uses the “pi” user instead of the default “debian-transmission
+```
+sudo vim /etc/init.d/transmission-daemon
+
+# need to edit the “USER=” line, so that the Transmission daemon will be run by the “pi” user and not the “debian-transmission
+
+```
+
+### change the user from “debian-transmission” to “pi” in the service file
+
+```
+sudo nano /etc/systemd/system/multi-user.target.wants/transmission-daemon.service
+# user=pi
+```
+
+### tell the service manager to reload all service configuration files
+```
+sudo systemctl daemon-reload
+```
+
+### take ownership of the “/etc/transmission-daemon” folder
+```
+sudo chown -R pi:pi /etc/transmission-daemon
+```
+
+### create a directory where the transmission-daemon will access the “setting.json” file
+```
+sudo mkdir -p /home/pi/.config/transmission-daemon/
+sudo ln -s /etc/transmission-daemon/settings.json /home/pi/.config/transmission-daemon/
+sudo chown -R pi:pi /home/pi/.config/transmission-daemon/
+
 ```
 
 ### restart the transmission-daemon
